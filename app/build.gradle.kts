@@ -3,7 +3,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -43,8 +43,11 @@ android {
 
 dependencies {
 
-    implementation("com.google.dagger:hilt-android:2.49")
-    kapt("com.google.dagger:hilt-android-compiler:2.44.2")
+
+//    implementation(libs.hilt.work)
+    kapt(libs.hilt.compilar)
+    kapt(libs.hiltCompiler)
+    implementation(libs.hilt)
 
     implementation(libs.appcompat)
     implementation(libs.material)
