@@ -44,11 +44,13 @@ android {
 dependencies {
 
 
-//    implementation(libs.hilt.work)
+implementation(libs.hilt.common)
+    //    implementation(libs.hilt.work)
     kapt(libs.hilt.compilar)
     kapt(libs.hiltCompiler)
     implementation(libs.hilt)
-
+    implementation("androidx.work:work-runtime:2.8.1")
+    implementation("androidx.hilt:hilt-work:1.2.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

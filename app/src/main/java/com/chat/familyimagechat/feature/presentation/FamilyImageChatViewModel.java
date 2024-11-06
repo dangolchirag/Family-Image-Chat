@@ -4,7 +4,11 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.ViewModel;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
+import com.chat.familyimagechat.db.ChatInsertWorker;
 import com.chat.familyimagechat.db.FamilyChatEntity;
 import com.chat.familyimagechat.feature.domain.LocalChatSourceRepository;
 import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
@@ -26,8 +30,22 @@ public class FamilyImageChatViewModel extends ViewModel {
     }
 
     public void print() {
-        new Thread(() -> {
-            localChatSourceRepository.upsertChat(new FamilyChatEntity(",",0L,true, MessageDelivery.DELIVERED));
-        }).start();
+//        new Thread(() -> {
+//            localChatSourceRepository.upsertChat(new FamilyChatEntity(",",0L,true, MessageDelivery.DELIVERED));
+//        }).start();
+
+        Data inputData = new Data.Builder()
+            .putString("chat_id", "chat")
+            .putString("chat_message", "chat.getMessage()")
+            .build();
+
+    // Create a OneTimeWorkRequest for the ChatInsertWorker
+    OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ChatInsertWorker.class)
+            .setInputData(inputData)
+            .build();
+
+    // Enqueue the work request
+    WorkManager.getInstance(context).enqueue(workRequest);
+
     }
 }
