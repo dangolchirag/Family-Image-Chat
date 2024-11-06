@@ -5,7 +5,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.chat.familyimagechat.db.ChatDao;
+import com.chat.familyimagechat.db.FamilyChatEntity;
 import com.chat.familyimagechat.feature.domain.LocalChatSourceRepository;
+
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,8 +23,12 @@ public class LocalChatSourceRepositoryImpl implements LocalChatSourceRepository 
 
 
     @Override
-    public void print(Context context) {
-        Toast.makeText(context, "print", Toast.LENGTH_SHORT).show();
-        //Log.i(TAG, "print: test");
+    public List<FamilyChatEntity> getAllChats() {
+        return dao.getAllChats();
+    }
+
+    @Override
+    public void upsertChat(FamilyChatEntity chat) {
+        dao.upsertChat(chat);
     }
 }

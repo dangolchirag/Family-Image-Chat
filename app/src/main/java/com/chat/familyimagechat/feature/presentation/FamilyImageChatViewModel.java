@@ -5,7 +5,9 @@ import android.content.Context;
 
 import androidx.lifecycle.ViewModel;
 
+import com.chat.familyimagechat.db.FamilyChatEntity;
 import com.chat.familyimagechat.feature.domain.LocalChatSourceRepository;
+import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
 
 import javax.inject.Inject;
 
@@ -24,6 +26,8 @@ public class FamilyImageChatViewModel extends ViewModel {
     }
 
     public void print() {
-        localChatSourceRepository.print(context);
+        new Thread(() -> {
+            localChatSourceRepository.upsertChat(new FamilyChatEntity(",",0L,true, MessageDelivery.DELIVERED));
+        }).start();
     }
 }
