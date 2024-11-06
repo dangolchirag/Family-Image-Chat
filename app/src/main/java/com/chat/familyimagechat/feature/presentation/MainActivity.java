@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -30,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+
     private ActivityMainBinding binding;
 
     @Override
@@ -43,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        FamilyImageChatViewModel viewModel = new ViewModelProvider(this).get(FamilyImageChatViewModel.class);
+        viewModel.print();
         setupSupportActionBar();
         setupRecyclerView();
 //        ChatDataBase db = DatabaseClient.getInstance(this).getChatDatabase();

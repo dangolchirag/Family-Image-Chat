@@ -1,5 +1,6 @@
 package com.chat.familyimagechat.di;
 
+import com.chat.familyimagechat.db.ChatDao;
 import com.chat.familyimagechat.db.ChatDataBase;
 import dagger.Provides;
 import dagger.Module;
@@ -20,5 +21,11 @@ public class DatabaseModule {
     public static ChatDataBase provideRoomDatabase(@ApplicationContext Context appContext) {
         return Room.databaseBuilder(appContext, ChatDataBase.class, DATABASE_NAME)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    public ChatDao provideBrokerDao(ChatDataBase database) {
+        return database.getChatDao();
     }
 }
