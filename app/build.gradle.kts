@@ -53,6 +53,7 @@ dependencies {
 
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
+    kapt("org.xerial:sqlite-jdbc:3.46.1.0") // Only for computer with M1 CPU
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.chat.familyimagechat.R;
 import com.chat.familyimagechat.databinding.ActivityMainBinding;
+import com.chat.familyimagechat.db.ChatDataBase;
+import com.chat.familyimagechat.db.DatabaseClient;
+import com.chat.familyimagechat.db.FamilyChatEntity;
 import com.chat.familyimagechat.feature.presentation.models.ImageChatUI;
 import com.chat.familyimagechat.utils.Utils;
 
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setupRecyclerView();
 //        ChatDataBase db = DatabaseClient.getInstance(this).getChatDatabase();
 //        new Thread(() -> {
-//            db.getChatDao().insertChat(new ChatEntity("hello"));
+//            db.getChatDao().upsertChat(new FamilyChatEntity());
 //        }).start();
     }
 
