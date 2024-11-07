@@ -4,8 +4,11 @@ package com.chat.familyimagechat.db;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.chat.familyimagechat.feature.domain.models.ChatItem;
 import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Entity(
@@ -25,6 +28,12 @@ public class FamilyChatEntity {
         this.dateTime = dateTime;
         this.isMe = isMe;
         this.delivery = delivery;
+    }
+
+    public ChatItem toChatItem() {
+        return new ChatItem(imagePath, Instant
+                .ofEpochMilli(dateTime)
+                .atZone(ZoneId.systemDefault()), isMe, delivery);
     }
 
     public String getImagePath() {

@@ -1,6 +1,7 @@
 package com.chat.familyimagechat.feature.presentation;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.chat.familyimagechat.databinding.ActivityMainBinding;
 import com.chat.familyimagechat.db.ChatDataBase;
 import com.chat.familyimagechat.db.DatabaseClient;
 import com.chat.familyimagechat.db.FamilyChatEntity;
+import com.chat.familyimagechat.feature.domain.models.ChatItem;
 import com.chat.familyimagechat.feature.presentation.models.ImageChatUI;
 import com.chat.familyimagechat.utils.Utils;
 
@@ -31,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
 
     private ActivityMainBinding binding;
 
@@ -53,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
 //        new Thread(() -> {
 //            db.getChatDao().upsertChat(new FamilyChatEntity());
 //        }).start();
+
+//        for (ChatItem item :
+//                viewModel.getAllChats()) {
+//            Log.i(TAG, "onCreate: "+item.getImagePath());
+//        }
     }
 
     private void setupRecyclerView() {
