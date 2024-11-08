@@ -1,5 +1,6 @@
 package com.chat.familyimagechat.feature.presentation;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -65,7 +66,8 @@ public class ImageChatAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         void bind() {
             Glide.with(itemView.getContext())
-                    .load(R.drawable.medium)
+//                    .load(R.drawable.medium)
+                    .load(Uri.parse("content://media/external/images/media/1000018695"))
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(16))))
                     .into(binding.chatImage);
         }
@@ -82,8 +84,9 @@ public class ImageChatAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         void bind() {
             Glide.with(itemView.getContext())
-                    .load(R.drawable.medium)
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(16))))
+//                    .load(R.drawable.medium)
+                    .load(Uri.parse("content://media/external/images/media/1000018695"))
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8))))
                     .into(binding.chatImage);
         }
     }

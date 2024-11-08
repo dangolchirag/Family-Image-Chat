@@ -25,6 +25,7 @@
 
     <!-- FrameLayout to hold your content -->
     <FrameLayout
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -34,7 +35,24 @@
             android:id="@+id/image_chat_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp" />
+             />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:id="@+id/allowPermission"
+            android:text="@string/allow_access"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </FrameLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_anchor="@id/frame_layout"
+        app:layout_anchorGravity="bottom|end" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

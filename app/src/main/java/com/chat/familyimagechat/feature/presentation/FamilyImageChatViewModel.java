@@ -1,6 +1,7 @@
 package com.chat.familyimagechat.feature.presentation;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
@@ -24,6 +25,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext;
 
 @HiltViewModel
 public class FamilyImageChatViewModel extends ViewModel {
+    Uri uri = Uri.parse("android.resource://com.chat.familyimagechat/drawable/medium");
     private static final String TAG = "FamilyImageChatViewMode";
     private final LocalChatSourceRepository localChatSourceRepository;
     private final Context context;
@@ -54,16 +56,11 @@ public class FamilyImageChatViewModel extends ViewModel {
     }
 
     public void getAllChats() {
-
-
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "run: ");
-                List<ChatItem> items = localChatSourceRepository.getAllChats();
-                for (ChatItem item : items) {
-                    Log.i(TAG, "run: "+item.getId());
-                }
+        executor.execute(() -> {
+            Log.i(TAG, "run: ");
+            List<ChatItem> items = localChatSourceRepository.getAllChats();
+            for (ChatItem item : items) {
+                Log.i(TAG, "run: "+item.getId());
             }
         });
     }
