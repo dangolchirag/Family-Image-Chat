@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.chat.familyimagechat.R;
 import com.chat.familyimagechat.databinding.ActivityMainBinding;
 import com.chat.familyimagechat.feature.domain.models.ChatItem;
+import com.chat.familyimagechat.feature.presentation.interfaces.OnAutoResponseReceived;
 import com.chat.familyimagechat.feature.presentation.interfaces.OnChatsReceived;
 import com.chat.familyimagechat.feature.presentation.models.ImageChatUI;
 import com.chat.familyimagechat.utils.Utils;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean requestFromButton = false;
     private FamilyImageChatViewModel viewModel;
-
+    private LinearLayoutManager layoutManager;
     private final ChatItemPaddingDecorator decorator = new ChatItemPaddingDecorator(Utils.dpToPx(8));;
     ActivityResultLauncher<Intent> mStartForResultImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
@@ -82,10 +83,9 @@ public class MainActivity extends AppCompatActivity {
                         );
 
                         viewModel.upsertChat(chat);
-                        Log.i(TAG, "onActivityResult: "+viewModel.chats.size());
-                        Log.i(TAG, "getAllChats: called1");
+
                         submitData();
-                        binding.imageChatList.getLayoutManager().scrollToPosition(viewModel.chats.size() - 1);
+                        scrollToBottom();
                     }, 200);
 
                 } catch (Exception e) {
@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        layoutManager = new LinearLayoutManager(this);
         viewModel = new ViewModelProvider(this).get(FamilyImageChatViewModel.class);
         imageChatAdaptor = new ImageChatAdaptor();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions();
         }
         getChatsFromDB();
+        onAutoResponseReceived();
 
 //        for (int i = 0; i < 10; i++) {
 //            Log.i(TAG, "onCreate: "+i);
@@ -156,6 +158,20 @@ public class MainActivity extends AppCompatActivity {
 //        }
     }
 
+    private void scrollToBottom(){
+        layoutManager.scrollToPositionWithOffset(viewModel.chats.size() - 1, 0);
+    }
+    private void onAutoResponseReceived(){
+        viewModel.setOnAutoResponseReceived(new OnAutoResponseReceived(){
+            @Override
+            public void onReceived() {
+                submitData();
+                new Handler().postDelayed(() ->{
+                    scrollToBottom();
+                }, 200);
+            }
+        });
+    }
     private void getChatsFromDB() {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.allowPermission.setVisibility(View.GONE);
@@ -171,8 +187,9 @@ public class MainActivity extends AppCompatActivity {
                     binding.fab.setVisibility(View.VISIBLE);
                     submitData();
                     new Handler().postDelayed(() ->{
-                        binding.imageChatList.getLayoutManager().scrollToPosition(viewModel.chats.size() - 1);
-                    }, 200);
+                        Log.i(TAG, "onReceived: "+(viewModel.chats.size() - 1));
+                        scrollToBottom();
+                    }, 500);
                 });
             }
         });
@@ -220,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         binding.imageChatList.setAdapter(imageChatAdaptor);
-        binding.imageChatList.setLayoutManager(new LinearLayoutManager(this));
+        binding.imageChatList.setLayoutManager(layoutManager);
         binding.imageChatList.setItemAnimator(new DefaultItemAnimator());
 
     }

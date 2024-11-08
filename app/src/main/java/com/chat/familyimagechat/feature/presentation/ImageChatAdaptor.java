@@ -1,6 +1,7 @@
 package com.chat.familyimagechat.feature.presentation;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -18,6 +19,7 @@ import com.chat.familyimagechat.databinding.ChatItemNotMeBinding;
 import com.chat.familyimagechat.feature.presentation.models.ImageChatUI;
 import com.chat.familyimagechat.utils.Utils;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewHolder> {
@@ -71,11 +73,15 @@ public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewH
                     .load(Uri.parse(chat.getImagePath()))
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8))))
                     .into(binding.chatImage);
+            binding.dateTime.setText(String.valueOf(DateTimeFormatter
+                    .ofPattern("mm:ss a")
+                    .format(chat.getDateTime())));
         }
     }
 
     public static class ImageChatMeVH extends RecyclerView.ViewHolder {
 
+        private static final String TAG = "ImageChatMeVH";
         private final ChatItemMeBinding binding;
 
         public ImageChatMeVH(ChatItemMeBinding binding) {
@@ -88,6 +94,9 @@ public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewH
                     .load(Uri.parse(chat.getImagePath()))
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8))))
                     .into(binding.chatImage);
+            binding.dateTime.setText(String.valueOf(DateTimeFormatter
+                    .ofPattern("h:m a")
+                    .format(chat.getDateTime())));
         }
     }
 }
