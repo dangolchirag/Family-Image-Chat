@@ -1,26 +1,17 @@
 package com.chat.familyimagechat.db;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.hilt.work.HiltWorker;
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.chat.familyimagechat.feature.domain.LocalChatSourceRepository;
 import com.chat.familyimagechat.feature.domain.models.ChatItem;
-import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
-
-import java.time.Instant;
-import java.time.ZoneId;
-
-import javax.inject.Inject;
 
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedInject;
-
 
 
 @HiltWorker
@@ -35,7 +26,6 @@ public class ChatInsertWorker extends Worker {
                             LocalChatSourceRepository localChatSourceRepository
     ) {
         super(context, workerParams);
-//        Log.i(TAG, "ChatInsertWorker: "+localChatSourceRepository);
         this.localChatSourceRepository = localChatSourceRepository;
     }
 
@@ -43,25 +33,23 @@ public class ChatInsertWorker extends Worker {
     @Override
     public Result doWork() {
         try {
-            // Get the chat data from the WorkManager input data
-            String chatId = getInputData().getString("chat_id");
-            String chatMessage = getInputData().getString("chat_message");
+
+            int chatId = getInputData().getInt("_id", 0);
+            String image = getInputData().getString("_image");
+            boolean isMe = getInputData().getBoolean("_isMe", true);
 
 
-
-            // Validate the input data
-            if (chatId == null || chatMessage == null) {
-                return Result.failure();  // Return failure if data is invalid
+            if (image == null) {
+                return Result.failure();
             }
 
-            // Create a ChatItem object and upsert it into the repository
-            ChatItem chatItem = new ChatItem(1,"chatId1",System.currentTimeMillis(), true, MessageDelivery.DELIVERED);
+            ChatItem chatItem = new ChatItem(chatId, image, System.currentTimeMillis(), isMe);
             localChatSourceRepository.upsertChat(chatItem);
-            Data data = new Data.Builder().putString("sadf","insert").build();
-            return Result.success(data);  // Return success if everything is okay
+
+            return Result.success();
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure();  // Return failure if there is an exception
+
+            return Result.failure();
         }
     }
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -19,12 +20,13 @@ import com.chat.familyimagechat.utils.Utils;
 
 import java.util.List;
 
-public class ImageChatAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewHolder> {
 
-    private final List<ImageChatUI> chats;
 
-    public ImageChatAdaptor(List<ImageChatUI> chats) {
-        this.chats = chats;
+
+    public ImageChatAdaptor() {
+        super(new DiffCallback());
+
     }
 
     @Override
@@ -35,7 +37,7 @@ public class ImageChatAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHold
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        boolean isMe = chats.get(viewType).isMe();
+        boolean isMe = getItem(viewType).isMe();
         return isMe ?
                 new ImageChatMeVH(ChatItemMeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false))
                 : new ImageChatVH(ChatItemNotMeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
@@ -43,17 +45,17 @@ public class ImageChatAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        final ImageChatUI chatUI = getItem(position);
         if (holder instanceof ImageChatVH) {
-            ((ImageChatVH) holder).bind();
+            ((ImageChatVH) holder).bind(chatUI);
         } else if (holder instanceof ImageChatMeVH) {
-            ((ImageChatMeVH) holder).bind();
+            ((ImageChatMeVH) holder).bind(chatUI);
         }
     }
-
-    @Override
-    public int getItemCount() {
-        return chats.size();
+    ImageChatUI getChat(int position) {
+        return getItem(position);
     }
+
 
     public static class ImageChatVH extends RecyclerView.ViewHolder {
 
@@ -64,11 +66,10 @@ public class ImageChatAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.binding = binding;
         }
 
-        void bind() {
+        void bind(ImageChatUI chat) {
             Glide.with(itemView.getContext())
-//                    .load(R.drawable.medium)
-                    .load(Uri.parse("content://media/external/images/media/1000018695"))
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(16))))
+                    .load(Uri.parse(chat.getImagePath()))
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8))))
                     .into(binding.chatImage);
         }
     }
@@ -82,10 +83,9 @@ public class ImageChatAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.binding = binding;
         }
 
-        void bind() {
+        void bind(ImageChatUI chat) {
             Glide.with(itemView.getContext())
-//                    .load(R.drawable.medium)
-                    .load(Uri.parse("content://media/external/images/media/1000018695"))
+                    .load(Uri.parse(chat.getImagePath()))
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8))))
                     .into(binding.chatImage);
         }

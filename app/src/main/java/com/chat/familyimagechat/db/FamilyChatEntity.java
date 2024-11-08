@@ -5,12 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.chat.familyimagechat.feature.domain.models.ChatItem;
-import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
 import com.google.gson.Gson;
-
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @Entity(
         tableName = "family_chat"

@@ -7,15 +7,13 @@ public class ImageChatUI {
     private final String imagePath;
     private final ZonedDateTime dateTime;
     private final boolean isMe;
-    private final MessageDelivery delivery;
 
     // Constructor
-    public ImageChatUI(int id,String imagePath, ZonedDateTime dateTime, boolean isMe, MessageDelivery delivery) {
+    public ImageChatUI(int id,String imagePath, ZonedDateTime dateTime, boolean isMe) {
         this.id = id;
         this.imagePath = imagePath;
         this.dateTime = dateTime;
         this.isMe = isMe;
-        this.delivery = delivery;
     }
 
     // Getters
@@ -29,10 +27,6 @@ public class ImageChatUI {
 
     public boolean isMe() {
         return isMe;
-    }
-
-    public MessageDelivery getDelivery() {
-        return delivery;
     }
 
     public int getId() {
