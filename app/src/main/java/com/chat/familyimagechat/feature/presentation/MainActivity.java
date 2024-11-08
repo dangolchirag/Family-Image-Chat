@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             binding.imageChatList.setVisibility(View.VISIBLE);
             binding.fab.setVisibility(View.VISIBLE);
             submitData();
-            new Handler().postDelayed(this::scrollToBottom, 200);
+            new Handler().postDelayed(this::scrollToBottom, 500);
         }));
     }
 
@@ -179,8 +179,6 @@ public class MainActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         binding.imageChatList.setAdapter(imageChatAdaptor);
         binding.imageChatList.setLayoutManager(layoutManager);
-        binding.imageChatList.setItemAnimator(new DefaultItemAnimator());
-
     }
 
     private void scrollToBottom() {
