@@ -7,9 +7,7 @@ import androidx.room.PrimaryKey;
 import com.chat.familyimagechat.feature.domain.models.ChatItem;
 import com.google.gson.Gson;
 
-@Entity(
-        tableName = "family_chat"
-)
+@Entity(tableName = "family_chat")
 public class FamilyChatEntity {
 
     @PrimaryKey
@@ -38,7 +36,7 @@ public class FamilyChatEntity {
         this.json = json;
     }
 
-    public ChatItem toChatItem(){
+    public ChatItem toChatItem() {
         Gson gson = new Gson();
         return gson.fromJson(json, ChatItem.class);
     }

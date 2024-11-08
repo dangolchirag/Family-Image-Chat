@@ -2,6 +2,7 @@ package com.chat.familyimagechat;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.hilt.work.HiltWorkerFactory;
 import androidx.work.Configuration;
 
@@ -15,10 +16,9 @@ public class FamilyChatApplication extends Application implements Configuration.
     @Inject
     HiltWorkerFactory workerFactory;
 
+    @NonNull
     @Override
     public Configuration getWorkManagerConfiguration() {
-        return new Configuration.Builder()
-                .setWorkerFactory(workerFactory)
-                .build();
+        return new Configuration.Builder().setWorkerFactory(workerFactory).build();
     }
 }

@@ -1,7 +1,6 @@
 package com.chat.familyimagechat.feature.presentation;
 
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -9,21 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.chat.familyimagechat.R;
 import com.chat.familyimagechat.databinding.ChatItemMeBinding;
 import com.chat.familyimagechat.databinding.ChatItemNotMeBinding;
 import com.chat.familyimagechat.feature.presentation.models.ImageChatUI;
 import com.chat.familyimagechat.utils.Utils;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
-public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewHolder> {
-
+public class ImageChatAdaptor extends ListAdapter<ImageChatUI, RecyclerView.ViewHolder> {
 
 
     public ImageChatAdaptor() {
@@ -40,9 +35,7 @@ public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         boolean isMe = getItem(viewType).isMe();
-        return isMe ?
-                new ImageChatMeVH(ChatItemMeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false))
-                : new ImageChatVH(ChatItemNotMeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return isMe ? new ImageChatMeVH(ChatItemMeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)) : new ImageChatVH(ChatItemNotMeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -54,6 +47,7 @@ public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewH
             ((ImageChatMeVH) holder).bind(chatUI);
         }
     }
+
     ImageChatUI getChat(int position) {
         return getItem(position);
     }
@@ -69,13 +63,8 @@ public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewH
         }
 
         void bind(ImageChatUI chat) {
-            Glide.with(itemView.getContext())
-                    .load(Uri.parse(chat.getImagePath()))
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8))))
-                    .into(binding.chatImage);
-            binding.dateTime.setText(String.valueOf(DateTimeFormatter
-                    .ofPattern("mm:ss a")
-                    .format(chat.getDateTime())));
+            Glide.with(itemView.getContext()).load(Uri.parse(chat.getImagePath())).apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8)))).into(binding.chatImage);
+            binding.dateTime.setText(String.valueOf(DateTimeFormatter.ofPattern("mm:ss a").format(chat.getDateTime())));
         }
     }
 
@@ -90,13 +79,8 @@ public class ImageChatAdaptor extends ListAdapter<ImageChatUI,RecyclerView.ViewH
         }
 
         void bind(ImageChatUI chat) {
-            Glide.with(itemView.getContext())
-                    .load(Uri.parse(chat.getImagePath()))
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8))))
-                    .into(binding.chatImage);
-            binding.dateTime.setText(String.valueOf(DateTimeFormatter
-                    .ofPattern("h:m a")
-                    .format(chat.getDateTime())));
+            Glide.with(itemView.getContext()).load(Uri.parse(chat.getImagePath())).apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dpToPx(8)))).into(binding.chatImage);
+            binding.dateTime.setText(String.valueOf(DateTimeFormatter.ofPattern("h:m a").format(chat.getDateTime())));
         }
     }
 }

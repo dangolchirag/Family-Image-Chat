@@ -5,14 +5,13 @@ import com.chat.familyimagechat.db.FamilyChatEntity;
 import com.chat.familyimagechat.feature.domain.LocalChatSourceRepository;
 import com.chat.familyimagechat.feature.domain.models.ChatItem;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 public class LocalChatSourceRepositoryImpl implements LocalChatSourceRepository {
-    private static final String TAG = "LocalChatSourceReposito";
+
     private final ChatDao dao;
 
     @Inject

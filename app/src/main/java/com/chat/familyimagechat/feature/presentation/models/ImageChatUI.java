@@ -8,15 +8,13 @@ public class ImageChatUI {
     private final ZonedDateTime dateTime;
     private final boolean isMe;
 
-    // Constructor
-    public ImageChatUI(int id,String imagePath, ZonedDateTime dateTime, boolean isMe) {
+    public ImageChatUI(int id, String imagePath, ZonedDateTime dateTime, boolean isMe) {
         this.id = id;
         this.imagePath = imagePath;
         this.dateTime = dateTime;
         this.isMe = isMe;
     }
 
-    // Getters
     public String getImagePath() {
         return imagePath;
     }

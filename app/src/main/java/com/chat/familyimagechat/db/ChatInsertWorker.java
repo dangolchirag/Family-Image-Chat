@@ -16,7 +16,6 @@ import dagger.assisted.AssistedInject;
 
 @HiltWorker
 public class ChatInsertWorker extends Worker {
-    private static final String TAG = "ChatInsertWorker";
 
     LocalChatSourceRepository localChatSourceRepository;
 

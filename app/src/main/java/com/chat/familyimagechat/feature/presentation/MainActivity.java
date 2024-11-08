@@ -5,15 +5,12 @@ import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -36,16 +33,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.chat.familyimagechat.R;
 import com.chat.familyimagechat.databinding.ActivityMainBinding;
-import com.chat.familyimagechat.feature.domain.models.ChatItem;
-import com.chat.familyimagechat.feature.presentation.interfaces.OnAutoResponseReceived;
-import com.chat.familyimagechat.feature.presentation.interfaces.OnChatsReceived;
 import com.chat.familyimagechat.feature.presentation.models.ImageChatUI;
 import com.chat.familyimagechat.utils.Utils;
 
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -55,48 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_READ_MEDIA_IMAGES = 0X01;
     private static final int REQUEST_CODE_READ_EXTERNAL_STORAGE = 0X02;
-    private static final String TAG = "MainActivity";
-
+    private final ChatItemPaddingDecorator decorator = new ChatItemPaddingDecorator(Utils.dpToPx(8));
     private ImageChatAdaptor imageChatAdaptor;
     private ActivityMainBinding binding;
-
-    private boolean requestFromButton = false;
-    private FamilyImageChatViewModel viewModel;
-    private LinearLayoutManager layoutManager;
-    private final ChatItemPaddingDecorator decorator = new ChatItemPaddingDecorator(Utils.dpToPx(8));;
-    ActivityResultLauncher<Intent> mStartForResultImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                Uri imageUri = result.getData().getData();
-
-                try {
-
-                    new Handler().postDelayed(() ->{
-                        ImageChatUI chat = new ImageChatUI(
-                                viewModel.chats.size(),
-                                imageUri.toString(),
-                                Instant
-                                        .ofEpochMilli(System.currentTimeMillis())
-                                        .atZone(ZoneId.systemDefault()),
-                                true
-                        );
-
-                        viewModel.upsertChat(chat);
-
-                        submitData();
-                        scrollToBottom();
-                    }, 200);
-
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "Failed to load image", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    });
-
-    ActivityResultLauncher<Intent> mStartForResultSettings = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+    private final ActivityResultLauncher<Intent> mStartForResultSettings = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
             if (hasPermission()) {
@@ -107,6 +61,29 @@ public class MainActivity extends AppCompatActivity {
                 binding.allowPermission.setVisibility(View.VISIBLE);
                 binding.imageChatList.setVisibility(View.GONE);
                 binding.fab.setVisibility(View.GONE);
+            }
+        }
+    });
+    private boolean requestFromButton = false;
+    private FamilyImageChatViewModel viewModel;
+    private LinearLayoutManager layoutManager;
+    private final ActivityResultLauncher<Intent> mStartForResultImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri imageUri = result.getData().getData();
+
+                try {
+
+                    new Handler().postDelayed(() -> {
+                        viewModel.upsertChat(new ImageChatUI(viewModel.chats.size(), imageUri.toString(), Instant.ofEpochMilli(System.currentTimeMillis()).atZone(ZoneId.systemDefault()), true));
+                        submitData();
+                        new Handler().postDelayed(MainActivity.this::scrollToBottom, 200);
+                    }, 200);
+
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, R.string.failed_to_load_image, Toast.LENGTH_SHORT).show();
+                }
             }
         }
     });
@@ -126,16 +103,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-//        viewModel.upsertChat(new ImageChatUI(
-//                1,
-//                "https://picsum.photos/200/300",
-//                Instant
-//                        .ofEpochMilli(System.currentTimeMillis())
-//                        .atZone(ZoneId.systemDefault()),
-//                true,
-//                MessageDelivery.DELIVERED
-//        ));
-        // viewModel.getAllChats();
         setupSupportActionBar();
         setupRecyclerView();
         setupClickListeners();
@@ -145,63 +112,37 @@ public class MainActivity extends AppCompatActivity {
         getChatsFromDB();
         onAutoResponseReceived();
 
-//        for (int i = 0; i < 10; i++) {
-//            Log.i(TAG, "onCreate: "+i);
-//            viewModel.upsertChat(new ImageChatUI(
-//                    i,
-//                    "content://media/external/images/media/1000018695",
-//                    Instant
-//                            .ofEpochMilli(System.currentTimeMillis())
-//                            .atZone(ZoneId.systemDefault()),
-//                    i % 2 == 0
-//            ));
-//        }
     }
 
-    private void scrollToBottom(){
-        layoutManager.scrollToPositionWithOffset(viewModel.chats.size() - 1, 0);
-    }
-    private void onAutoResponseReceived(){
-        viewModel.setOnAutoResponseReceived(new OnAutoResponseReceived(){
-            @Override
-            public void onReceived() {
-                submitData();
-                new Handler().postDelayed(() ->{
-                    scrollToBottom();
-                }, 200);
-            }
+
+    private void onAutoResponseReceived() {
+        viewModel.setOnAutoResponseReceived(() -> {
+            submitData();
+            new Handler().postDelayed(this::scrollToBottom, 200);
         });
     }
+
     private void getChatsFromDB() {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.allowPermission.setVisibility(View.GONE);
         binding.imageChatList.setVisibility(View.GONE);
         binding.fab.setVisibility(View.GONE);
-        viewModel.setOnChatsReceived(new OnChatsReceived() {
-            @Override
-            public void onReceived() {
-
-                runOnUiThread(() ->{
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.imageChatList.setVisibility(View.VISIBLE);
-                    binding.fab.setVisibility(View.VISIBLE);
-                    submitData();
-                    new Handler().postDelayed(() ->{
-                        Log.i(TAG, "onReceived: "+(viewModel.chats.size() - 1));
-                        scrollToBottom();
-                    }, 500);
-                });
-            }
-        });
+        viewModel.setOnChatsReceived(() -> runOnUiThread(() -> {
+            binding.progressBar.setVisibility(View.GONE);
+            binding.imageChatList.setVisibility(View.VISIBLE);
+            binding.fab.setVisibility(View.VISIBLE);
+            submitData();
+            new Handler().postDelayed(this::scrollToBottom, 200);
+        }));
     }
 
 
-    private void submitData(){
+    private void submitData() {
         imageChatAdaptor.submitList(viewModel.chats);
-
         binding.imageChatList.removeItemDecoration(decorator);
         binding.imageChatList.addItemDecoration(decorator);
     }
+
     private void setupClickListeners() {
         binding.fab.setOnClickListener(v -> {
             checkPermissionAndLaunchForImage();
@@ -242,11 +183,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void scrollToBottom() {
+        layoutManager.scrollToPositionWithOffset(viewModel.chats.size() - 1, 0);
+    }
+
     private void setupSupportActionBar() {
         setSupportActionBar(binding.toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(
-                getString(R.string.app_name)
-        );
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.app_name));
         binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
     }
 
@@ -279,15 +222,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void settingsAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permission Required");
-        builder.setMessage("Navigate to Setting for permission");
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.setTitle(R.string.permission_required);
+        builder.setMessage(R.string.navigate_to_setting_for_permission);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             Uri uri = Uri.fromParts("package", getPackageName(), null);
             intent.setData(uri);
             mStartForResultSettings.launch(intent);
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 }

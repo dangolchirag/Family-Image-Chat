@@ -15,7 +15,7 @@ public class ChatItem {
     private final boolean isMe;
 
     // Constructor
-    public ChatItem(int id,String imagePath, long dateTime, boolean isMe) {
+    public ChatItem(int id, String imagePath, long dateTime, boolean isMe) {
         this.id = id;
         this.imagePath = imagePath;
         this.dateTime = dateTime;
@@ -42,11 +42,12 @@ public class ChatItem {
 
     public FamilyChatEntity toEntity() {
         Gson gson = new Gson();
-        return new FamilyChatEntity(id,gson.toJson(this));
+        return new FamilyChatEntity(id, gson.toJson(this));
     }
-    public ImageChatUI toUI(){
-        return new ImageChatUI(id,imagePath, Instant
+
+    public ImageChatUI toUI() {
+        return new ImageChatUI(id, imagePath, Instant
                 .ofEpochMilli(dateTime)
-                .atZone(ZoneId.systemDefault()),isMe);
+                .atZone(ZoneId.systemDefault()), isMe);
     }
 }
