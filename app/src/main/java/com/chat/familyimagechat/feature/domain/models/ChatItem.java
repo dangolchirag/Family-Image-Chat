@@ -2,18 +2,21 @@ package com.chat.familyimagechat.feature.domain.models;
 
 import com.chat.familyimagechat.db.FamilyChatEntity;
 import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
+import com.google.gson.Gson;
 
 import java.time.ZonedDateTime;
 
 public class ChatItem {
 
+    private final int id;
     private final String imagePath;
-    private final ZonedDateTime dateTime;
+    private final long dateTime;
     private final boolean isMe;
     private final MessageDelivery delivery;
 
     // Constructor
-    public ChatItem(String imagePath, ZonedDateTime dateTime, boolean isMe, MessageDelivery delivery) {
+    public ChatItem(int id,String imagePath, long dateTime, boolean isMe, MessageDelivery delivery) {
+        this.id = id;
         this.imagePath = imagePath;
         this.dateTime = dateTime;
         this.isMe = isMe;
@@ -25,7 +28,7 @@ public class ChatItem {
         return imagePath;
     }
 
-    public ZonedDateTime getDateTime() {
+    public long getDateTime() {
         return dateTime;
     }
 
@@ -37,23 +40,12 @@ public class ChatItem {
         return delivery;
     }
 
-    // toString method (if needed)
-    @Override
-    public String toString() {
-        return "ImageChatUI{" +
-                "imagePath='" + imagePath + '\'' +
-                ", dateTime=" + dateTime +
-                ", isMe=" + isMe +
-                ", delivery=" + delivery +
-                '}';
+    public int getId() {
+        return id;
     }
 
-
     public FamilyChatEntity toEntity() {
-        return new FamilyChatEntity(
-                imagePath,
-                dateTime.toInstant().toEpochMilli(),
-                isMe,
-                delivery);
+        Gson gson = new Gson();
+        return new FamilyChatEntity(id,gson.toJson(this));
     }
 }

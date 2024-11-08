@@ -16,7 +16,9 @@ hiltCompiler = "1.2.0"
 hiltVersion = "2.49"
 hiltPlugin = "2.44"
 hiltCommon = "1.2.0"
+gson = "2.10.1"
 [libraries]
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 dagger-android-processor = { module = "com.google.dagger:dagger-android-processor", version.ref = "daggerAndroidProcessor" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

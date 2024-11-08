@@ -55,9 +55,7 @@ public class ChatInsertWorker extends Worker {
             }
 
             // Create a ChatItem object and upsert it into the repository
-            ChatItem chatItem = new ChatItem("chatId",  Instant
-                    .ofEpochMilli(System.currentTimeMillis())
-                    .atZone(ZoneId.systemDefault()), true, MessageDelivery.DELIVERED);
+            ChatItem chatItem = new ChatItem(1,"chatId1",System.currentTimeMillis(), true, MessageDelivery.DELIVERED);
             localChatSourceRepository.upsertChat(chatItem);
             Data data = new Data.Builder().putString("sadf","insert").build();
             return Result.success(data);  // Return success if everything is okay

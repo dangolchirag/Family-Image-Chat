@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey;
 
 import com.chat.familyimagechat.feature.domain.models.ChatItem;
 import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
+import com.google.gson.Gson;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -16,39 +17,34 @@ import java.time.ZonedDateTime;
 )
 public class FamilyChatEntity {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public int id;
-    private final String imagePath;
-    private final Long dateTime;
-    private final boolean isMe;
-    private final MessageDelivery delivery;
 
-    public FamilyChatEntity(String imagePath, Long dateTime, boolean isMe, MessageDelivery delivery) {
-        this.imagePath = imagePath;
-        this.dateTime = dateTime;
-        this.isMe = isMe;
-        this.delivery = delivery;
+    public String json;
+
+    public FamilyChatEntity(int id, String json) {
+        this.id = id;
+        this.json = json;
     }
 
-    public ChatItem toChatItem() {
-        return new ChatItem(imagePath, Instant
-                .ofEpochMilli(dateTime)
-                .atZone(ZoneId.systemDefault()), isMe, delivery);
+    public int getId() {
+        return id;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Long getDateTime() {
-        return dateTime;
+    public String getJson() {
+        return json;
     }
 
-    public boolean isMe() {
-        return isMe;
+    public void setJson(String json) {
+        this.json = json;
     }
 
-    public MessageDelivery getDelivery() {
-        return delivery;
+    public ChatItem toChatItem(){
+        Gson gson = new Gson();
+        return gson.fromJson(json, ChatItem.class);
     }
 }

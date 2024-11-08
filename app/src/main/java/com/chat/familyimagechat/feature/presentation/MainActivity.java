@@ -1,7 +1,6 @@
 package com.chat.familyimagechat.feature.presentation;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.chat.familyimagechat.R;
 import com.chat.familyimagechat.databinding.ActivityMainBinding;
-import com.chat.familyimagechat.db.ChatDataBase;
-import com.chat.familyimagechat.db.DatabaseClient;
-import com.chat.familyimagechat.db.FamilyChatEntity;
-import com.chat.familyimagechat.feature.domain.models.ChatItem;
 import com.chat.familyimagechat.feature.presentation.models.ImageChatUI;
+import com.chat.familyimagechat.feature.presentation.models.MessageDelivery;
 import com.chat.familyimagechat.utils.Utils;
 
 import java.time.Instant;
@@ -49,7 +45,16 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         FamilyImageChatViewModel viewModel = new ViewModelProvider(this).get(FamilyImageChatViewModel.class);
-        viewModel.print();
+        viewModel.upsertChat(new ImageChatUI(
+                1,
+                "https://picsum.photos/200/300",
+                Instant
+                        .ofEpochMilli(System.currentTimeMillis())
+                        .atZone(ZoneId.systemDefault()),
+                true,
+                MessageDelivery.DELIVERED
+        ));
+        viewModel.getAllChats();
         setupSupportActionBar();
         setupRecyclerView();
 //        ChatDataBase db = DatabaseClient.getInstance(this).getChatDatabase();
@@ -67,12 +72,13 @@ public class MainActivity extends AppCompatActivity {
         List<ImageChatUI> chats = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             chats.add(
-                    new ImageChatUI(
+                    new ImageChatUI(i,
                             "https://picsum.photos/200/300",
                             Instant
                                     .ofEpochMilli(System.currentTimeMillis())
                                     .atZone(ZoneId.systemDefault()),
-                            i % 2 == 0
+                            i % 2 == 0,
+                            MessageDelivery.DELIVERED
                     )
             );
         }

@@ -44,8 +44,10 @@ android {
 dependencies {
 
 
-implementation(libs.hilt.common)
-    //    implementation(libs.hilt.work)
+    implementation(libs.gson)
+
+    implementation(libs.hilt.common)
+
     kapt(libs.hilt.compilar)
     kapt(libs.hiltCompiler)
     implementation(libs.hilt)
